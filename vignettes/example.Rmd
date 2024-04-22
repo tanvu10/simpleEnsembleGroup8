@@ -1,0 +1,30 @@
+---
+title: "example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(simpleEnsembleGroup8)
+```
+
+```{r}
+vec <- c(1, 2, 3, 4, 5, NA)
+summary <- summarize_data(vec)
+print(summary)
+
+median_value <- calculate_median(vec)
+print(median_value)
+
+
+```

@@ -15,5 +15,5 @@
 
 hello <- function() {
   print("Hello, world!")
-  print(calculate_stats(c(1,2,3,4,5)))
+  print(summarize_data(c(1,2,3,4,5)))
 }
