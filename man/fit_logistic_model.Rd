@@ -2,28 +2,33 @@
 % Please edit documentation in R/log_model.R
 \name{fit_logistic_model}
 \alias{fit_logistic_model}
-\title{Logistic Regression Model Fitting with Summary Output}
+\title{Fit Logistic Regression Model with Optional Bagging and Intercept}
 \usage{
-fit_logistic_model(X, y)
+fit_logistic_model(X, y, add_intercept = TRUE, bagging = FALSE, R = 100)
 }
 \arguments{
-\item{X}{Matrix or data frame of predictor variables, possibly including categorical variables.}
+\item{X}{Predictor variables, matrix or data frame.}
 
-\item{y}{Binary response variable.}
+\item{y}{Response variable, binary vector.}
+
+\item{add_intercept}{Logical, if TRUE, an intercept term is added to the model.}
+
+\item{bagging}{Logical, if TRUE, performs bagging.}
+
+\item{R}{Integer, number of bootstrap samples for bagging (only used if bagging is TRUE).}
 }
 \value{
-A list containing model coefficients, standard errors, z-values, p-values,
-        and model statistics such as null and residual deviance and AIC.
+A list containing the logistic regression model details, or if bagging is TRUE,
+        returns the aggregated results from the bagging procedure.
 }
 \description{
-Fits a logistic regression model using the Newton-Raphson method. This function
-supports both numerical and categorical variables by converting categorical variables
-into dummy variables. It provides a summary similar to glm output in R.
+Fits a logistic regression model with optional bagging and the ability to include or exclude an intercept.
+The function uses the Newton-Raphson method for optimization and supports categorical variables through dummy encoding.
 }
 \examples{
-data(mtcars)
-X <- mtcars[, c("hp", "wt")]
-y <- as.numeric(mtcars$am == 1)
-result <- logistic_reg(X, y)
-print(result$summary)
+data(iris)
+X <- iris[iris$Species != "setosa", c("Sepal.Length", "Sepal.Width")]
+y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
+model <- logistic_reg(X, y, add_intercept = TRUE, bagging = FALSE)
+print(model$summary)
 }

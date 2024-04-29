@@ -4,23 +4,40 @@
 \alias{fit_lasso_model}
 \title{Lasso Regression Fitting}
 \usage{
-fit_lasso_model(y, X, lambda = NULL, bagging = FALSE, R = 100)
+fit_lasso_model(
+  y,
+  X,
+  lambda = NULL,
+  add_intercept = TRUE,
+  bagging = FALSE,
+  R = 100
+)
 }
 \arguments{
-\item{y}{A response vector with continuous or binary outcomes.}
+\item{y}{Response vector with continuous or binary outcomes.}
 
-\item{X}{A matrix of predictors.}
+\item{X}{Matrix of predictors, either numeric or factor types.}
 
-\item{lambda}{The regularization penalty parameter for lasso regression.
-If NULL, cv.glmnet is used to find the optimal lambda.}
+\item{lambda}{Regularization penalty parameter for lasso regression; if NULL, it is determined using cross-validation.}
+
+\item{add_intercept}{Logical indicating whether to include an intercept in the model.}
+
+\item{bagging}{Logical indicating whether to perform bagging.}
+
+\item{R}{The number of bootstrap samples to use if bagging is enabled.}
 }
 \value{
-A glmnet model object fitted with lasso regression.
+A glmnet model object fitted with lasso regression, or if bagging is enabled, an aggregated result from
+multiple bootstrap samples.
 }
 \description{
-Fits a lasso regression model using glmnet to a given set of predictors and response.
+Performs lasso regression using glmnet, optimizing variable selection and shrinkage of coefficients
+through L1 regularization. This approach is particularly useful in models with high dimensionality or
+multicollinearity among predictors. The function allows specifying whether to include an intercept and
+can automatically determine the optimal regularization penalty (lambda) via cross-validation. Optionally,
+bagging can be applied to improve model accuracy and robustness against overfitting.
 }
 \examples{
 data(mtcars)
-result_lasso <- fit_lasso_model(mtcars$mpg, mtcars[, c("hp", "wt")])
+result_lasso <- fit_lasso_model(mtcars$mpg, mtcars[, c("hp", "wt")], add_intercept = TRUE, bagging = FALSE)
 }

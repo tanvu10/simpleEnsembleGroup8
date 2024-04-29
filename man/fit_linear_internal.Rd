@@ -4,7 +4,7 @@
 \alias{fit_linear_internal}
 \title{Internal function to fit linear model}
 \usage{
-fit_linear_internal(y, X, add_intercept = TRUE)
+fit_linear_internal(y, X, add_intercept)
 }
 \arguments{
 \item{y}{Response variable vector.}

@@ -17,7 +17,7 @@
 #' y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
 #' model <- logistic_reg(X, y, add_intercept = TRUE, bagging = FALSE)
 #' print(model$summary)
-logistic_reg <- function(X, y, add_intercept = TRUE, bagging = FALSE, R = 100) {
+fit_logistic_model <- function(X, y, add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 
   if (add_intercept && !"Intercept" %in% colnames(X)) {

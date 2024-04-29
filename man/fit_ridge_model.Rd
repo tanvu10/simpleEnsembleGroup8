@@ -4,23 +4,41 @@
 \alias{fit_ridge_model}
 \title{Ridge Regression Fitting}
 \usage{
-fit_ridge_model(y, X, lambda = NULL, bagging = FALSE, R = 100)
+fit_ridge_model(
+  y,
+  X,
+  lambda = NULL,
+  add_intercept = TRUE,
+  bagging = FALSE,
+  R = 100
+)
 }
 \arguments{
-\item{y}{A response vector with continuous or binary outcomes.}
+\item{y}{Response vector with continuous or binary outcomes.}
 
-\item{X}{A matrix of predictors.}
+\item{X}{Matrix of predictors, either numeric or factor types.}
 
-\item{lambda}{The regularization penalty parameter for ridge regression.
-If NULL, cv.glmnet is used to find the optimal lambda.}
+\item{lambda}{Regularization penalty parameter for ridge regression; if NULL, it is determined via
+cross-validation.}
+
+\item{add_intercept}{Logical indicating whether to include an intercept in the model.}
+
+\item{bagging}{Logical indicating whether to perform bagging.}
+
+\item{R}{Integer specifying the number of bootstrap samples to use if bagging is enabled.}
 }
 \value{
-A glmnet model object fitted with ridge regression.
+A glmnet model object fitted using ridge regression, or if bagging is enabled, an aggregated
+result from multiple bootstrap samples.
 }
 \description{
-Fits a ridge regression model using glmnet to a given set of predictors and response.
+Performs ridge regression using glmnet, optimizing the balance between model complexity
+and prediction accuracy through L2 regularization. This method is ideal for handling multicollinearity,
+reducing overfitting, and shrinking coefficient values, particularly in situations where the number of
+predictors exceeds the number of observations. Optionally, bagging can be incorporated to further
+enhance model stability and prediction accuracy by aggregating results from multiple bootstrap samples.
 }
 \examples{
 data(mtcars)
-result_ridge <- fit_ridge_model(mtcars$mpg, mtcars[, c("hp", "wt")])
+result_ridge <- fit_ridge_model(mtcars$mpg, mtcars[, c("hp", "wt")], add_intercept = TRUE, bagging = FALSE)
 }

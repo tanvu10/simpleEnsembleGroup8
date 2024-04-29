@@ -9,27 +9,51 @@ fit_elastic_net_model(
   X,
   alpha = 0.5,
   lambda = NULL,
+  add_intercept = TRUE,
   use_bagging = FALSE,
   R = 100
 )
 }
 \arguments{
-\item{y}{A response vector with continuous or binary outcomes.}
+\item{y}{Response vector with continuous or binary outcomes.}
 
-\item{X}{A matrix of predictors.}
+\item{X}{Predictor matrix, accepting numeric or factor types.}
 
-\item{alpha}{The elastic net mixing parameter, with 0 <= alpha <= 1.}
+\item{alpha}{The elastic net mixing parameter, ranging from 0 (ridge) to 1 (lasso).}
 
-\item{lambda}{The regularization penalty parameter for elastic net regression.
-If NULL, cv.glmnet is used to find the optimal lambda.}
+\item{lambda}{Regularization penalty parameter; auto-determined via cross-validation if NULL.}
+
+\item{add_intercept}{Logical indicating whether to include an intercept in the model.}
+
+\item{use_bagging}{Logical for enabling bagging, using multiple bootstrap samples.}
+
+\item{R}{The number of bootstrap samples for bagging, applicable if bagging is TRUE.}
 }
 \value{
-A glmnet model object fitted with elastic net regression.
+A glmnet model object fitted using elastic net regularization, or an aggregated result from multiple
+bootstrap samples if bagging is enabled.
+
+A glmnet model object fitted using elastic net regularization, or an aggregated result from multiple
+bootstrap samples if bagging is enabled. The result includes the model type for enhanced prediction functionality.
 }
 \description{
-Fits an elastic net regression model using glmnet to a given set of predictors and response.
+This function fits an elastic net regression model, which utilizes both lasso and ridge regularization
+techniques to improve model performance and interpretability. The function is effective for datasets with
+multicollinearity or more predictors than observations, adjusting the model complexity by blending L1 and L2
+penalties controlled by the alpha parameter. Optionally, bagging can be used to enhance stability and accuracy
+in high-variance scenarios through bootstrap aggregating.
+
+This function fits an elastic net regression model, which utilizes both lasso and ridge regularization
+techniques to improve model performance and interpretability. The function is effective for datasets with
+multicollinearity or more predictors than observations, adjusting the model complexity by blending L1 and L2
+penalties controlled by the alpha parameter. Optionally, bagging can be used to enhance stability and accuracy
+in high-variance scenarios through bootstrap aggregating.
 }
 \examples{
 data(mtcars)
-result_elastic_net <- fit_elastic_net_model(mtcars$mpg, mtcars[, c("hp", "wt")], alpha = 0.5)
+result <- fit_elastic_net_model(mtcars$mpg, mtcars[, c("hp", "wt")], alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
+print(result)
+data(mtcars)
+result <- fit_elastic_net_model(mtcars$mpg, mtcars[, c("hp", "wt")], alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
+print(result)
 }
