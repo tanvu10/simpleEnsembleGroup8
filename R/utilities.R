@@ -40,3 +40,15 @@ create_dummy_matrix <- function(X) {
   }
   return(dummy_matrix)
 }
+
+
+compute_pseudoinverse <- function(A){
+  svd_result <- svd(A)
+  u <- svd_result$u
+  d <- svd_result$d
+  v <- svd_result$v
+
+  pinv <- v %*% diag(lapply(d, invert_nonzero), nrow = dim(A)[2], ncol = dim(A)[1]) %*% Conj(t(u))
+
+  return(pinv)
+}
