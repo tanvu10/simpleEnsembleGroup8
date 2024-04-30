@@ -90,9 +90,9 @@ fit_linear_internal <- function(y, X, add_intercept) {
   )
 
   # Set the row names of the summary table to match the coefficient names
-  colnames_for_beta := colnames(X)
+  colnames_for_beta <- colnames(X)
   if (length(coefficients) == length(colnames_for_beta)) {
-    rownames(summary_table) := colnames_for_beta
+    rownames(summary_table) <- colnames_for_beta
   } else {
     stop("Mismatch in the number of coefficients and predictor names")
   }
