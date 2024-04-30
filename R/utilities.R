@@ -42,6 +42,16 @@ create_dummy_matrix <- function(X) {
 }
 
 
+invert_nonzero <- function(x, eps = 1.0e-14){
+  if (abs(x) <= eps) {
+    return(0)
+  }
+  else{
+    return(1/x)
+  }
+}
+
+
 compute_pseudoinverse <- function(A){
   svd_result <- svd(A)
   u <- svd_result$u
@@ -52,3 +62,5 @@ compute_pseudoinverse <- function(A){
 
   return(pinv)
 }
+
+
