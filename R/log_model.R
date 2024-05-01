@@ -82,7 +82,7 @@ fit_log_internal <- function(X, y, add_intercept) {
 
   # Z-values and P-values
   z_values <- beta / se_beta
-  p_values <- 2 * pnorm(-abs(z_values), lower.tail = FALSE)
+  p_values <- 2 * (1 - pnorm(abs(z_values)))
 
   # Model deviances and AIC
   loglik <- sum(dbinom(y, size = 1, prob = p, log = TRUE))
