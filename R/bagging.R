@@ -31,8 +31,8 @@
 #' @export
 perform_bagging <- function(y, X, fit_function, R) {
   n <- length(y)
-  coefficients_list <- vector("list", R)
-  predictions_matrix <- matrix(NA, nrow = n, ncol = R)
+  coefficients_list <- list()
+  predictions_matrix <- matrix(NA, nrow = n, ncol = R)  # Matrix to store predictions for each bootstrap sample
   variable_importance <- numeric(ncol(X))
 
   for (i in 1:R) {
@@ -40,32 +40,33 @@ perform_bagging <- function(y, X, fit_function, R) {
     X_sample <- X[idx, , drop = FALSE]
     y_sample <- y[idx]
 
-    try({
-      model <- fit_function(y_sample, X_sample)
-      if (!is.null(model$coefficients) && length(model$fitted_values) == n) {
-        coefficients_list[[i]] <- as.vector(model$coefficients)
-        predictions_matrix[, i] <- model$fitted_values
-        variable_importance <- variable_importance + (model$coefficients != 0)
-      }
-    }, silent = TRUE)
+    model <- fit_function(y_sample, X_sample)
+    if (!is.null(model$coefficients) && length(model$fitted_values) == n) {
+      coefficients_list[[i]] <- as.vector(model$coefficients)
+      predictions_matrix[, i] <- model$fitted_values
+      variable_importance <- variable_importance + (model$coefficients != 0)
+    } else {
+      cat("Mismatch or NULL data in iteration:", i, "\nLength of fitted_values:", length(model$fitted_values), "Expected:", n, "\n")
+    }
   }
 
+  # Calculate mean and standard deviation of coefficients
   all_coefs <- do.call(cbind, coefficients_list)
-  if (is.matrix(all_coefs) && ncol(all_coefs) == R) {
-    mean_coefs <- rowMeans(all_coefs, na.rm = TRUE)
-    std_coefs <- apply(all_coefs, 1, sd, na.rm = TRUE)
-    se_coefficients <- std_coefs / sqrt(R)
+  # print(all_coefs)
+  mean_coefs <- rowMeans(all_coefs, na.rm = TRUE)  # Calculate row-wise mean
+  std_coefs <- apply(all_coefs, 1, sd, na.rm = TRUE)  # Standard deviation by row
+  se_coefficients <- std_coefs / sqrt(R)  # Approximate standard error
 
-    t_values <- mean_coefs / se_coefficients
-    df <- n - ncol(X) - 1
-    p_values <- 2 * pt(-abs(t_values), df = df)
+  # Recompute t-values and p-values
+  t_values <- mean_coefs / se_coefficients
+  df <- n - ncol(X) - 1
+  p_values <- 2 * pt(-abs(t_values), df = df)
 
-    final_predictions <- rowMeans(predictions_matrix, na.rm = TRUE)
-    variable_importance <- variable_importance / R
+  # Calculate average predictions
+  final_predictions <- rowMeans(predictions_matrix, na.rm = TRUE)
 
-    return(list(coefficients = mean_coefs, se_coefficients = se_coefficients, t_values = t_values, p_values = p_values, predictions = final_predictions, variable_importance = variable_importance))
-  } else {
-    stop("Error in processing coefficients. Check model outputs.")
-  }
+  # Normalize variable importance
+  variable_importance <- variable_importance / R
+
+  return(list(coefficients = mean_coefs, se_coefficients = se_coefficients, t_values = t_values, p_values = p_values, predictions = final_predictions, variable_importance = variable_importance))
 }
-

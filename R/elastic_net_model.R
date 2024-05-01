@@ -56,6 +56,20 @@ fit_elastic_net_model <- function(y, X, alpha = 0.5, lambda = NULL, add_intercep
     lambda <- cv_fit$lambda.min
   }
 
+
+  model_details <- if (bagging) {
+    perform_bagging(y, X, function(y_sample, X_sample) {
+      glmnet_model <- glmnet(x = as.matrix(X_sample), y = y_sample, alpha = alpha, lambda = lambda, family = family, intercept = add_intercept)
+      list(coefficients = coef(glmnet_model), fitted_values = predict(glmnet_model, newx = as.matrix(X_sample), type = "response"))
+    }, R)
+  } else {
+    glmnet_model <- glmnet(x = as.matrix(X), y = y, alpha = alpha, lambda = lambda, family = family, intercept = add_intercept)
+    coefficients <- coef(glmnet_model, s = "lambda.min")  # Include intercept if add_intercept is TRUE
+    fitted_values <- predict(glmnet_model, newx = as.matrix(X), type = "response", s = "lambda.min")
+    list(model = glmnet_model, lambda = lambda, alpha= alpha, coefficients = coefficients, fitted_values = fitted_values)
+  }
+
+
   model_details <- if (use_bagging) {
     # Perform bagging with the specified number of bootstrap samples
     perform_bagging(y, X, function(y_sample, X_sample) {
