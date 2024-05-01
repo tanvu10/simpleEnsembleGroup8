@@ -52,8 +52,8 @@ perform_bagging <- function(y, X, fit_function, R) {
 
   # Calculate mean and standard deviation of coefficients
   all_coefs <- do.call(cbind, coefficients_list)
-  mean_coefs <- colMeans(all_coefs, na.rm = TRUE)
-  std_coefs <- apply(all_coefs, 2, sd, na.rm = TRUE)
+  mean_coefs <- rowMeans(all_coefs, na.rm = TRUE)  # Calculate row-wise mean
+  std_coefs <- apply(all_coefs, 1, sd, na.rm = TRUE)  # Standard deviation by row
   se_coefficients <- std_coefs / sqrt(R)  # Approximate standard error
 
   # Recompute t-values and p-values

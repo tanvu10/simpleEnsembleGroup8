@@ -116,6 +116,7 @@ fit_log_internal <- function(X, y, add_intercept) {
     residual_deviance = residual_deviance,
     aic = aic,
     summary = summary_table,
+    fitted_values = p,
     model_type = "logistic"  # Identifying the model type for prediction function
   ))
 }

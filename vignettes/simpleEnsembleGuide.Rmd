@@ -19,8 +19,45 @@ library(simpleEnsembleGroup8)
 ```
 
 ```{r}
-data(airquality)
-clean_airquality <- na.omit(airquality)
-model2 <- fit_linear_model(clean_airquality$Solar.R, clean_airquality[, -1], add_intercept = TRUE, bagging = FALSE)
+set.seed(123)  # for reproducibility
+
+# Number of observations
+n <- 500
+
+# Generate predictors
+X1 <- rnorm(n, mean = 50, sd = 10)  # Normal distribution for X1
+X2 <- rbinom(n, size = 1, prob = 0.5)  # Binary variable for X2
+X3 <- rpois(n, lambda = 3)  # Poisson distribution for X3
+
+# Generate binary response variable, y
+# Logistic model: logit(P(y = 1)) = -1 + 0.02*X1 - 0.5*X2 + 0.1*X3
+logit <- -1 + 0.02*X1 - 0.5*X2 + 0.1*X3
+prob <- exp(logit) / (1 + exp(logit))
+y <- rbinom(n, size = 1, prob = prob)
+
+# Combine into a data frame
+dataset <- data.frame(y = y, X1 = X1, X2 = X2, X3 = X3)
+dataset
+
+# Assuming the function fit_logistic_model is already defined and loaded
+# Run the logistic regression with bagging
+results <- fit_logistic_model(X = dataset[, -1], y = dataset$y, add_intercept = TRUE, bagging = TRUE, R = 50)
+```
+
+
+```{r}
+
+# Suppose we have a matrix where columns are different bootstrap samples
+# and rows are coefficients from these models
+all_coefs_example <- matrix(c(0.1, 0.2, 0.3,
+                              0.4, 0.5, 0.6,
+                              0.7, 0.8, 0.9), nrow = 3, byrow = TRUE)
+
+
+all_coefs_example
+# Calculate the mean of each coefficient across bootstrap samples
+mean_coefs_example <- colMeans(all_coefs_example)
+mean_coefs_example  # Should show the average for each row
+
 ```
 
