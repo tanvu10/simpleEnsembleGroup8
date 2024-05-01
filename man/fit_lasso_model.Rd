@@ -8,6 +8,7 @@ fit_lasso_model(
   y,
   X,
   lambda = NULL,
+  family = "gaussian",
   add_intercept = TRUE,
   bagging = FALSE,
   R = 100

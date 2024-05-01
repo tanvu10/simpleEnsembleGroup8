@@ -44,7 +44,7 @@ fit_logistic_model <- function(X, y, add_intercept = TRUE, bagging = FALSE, R = 
     }, R)
   }
 
-  model_details$model_type <- "logistic"  # Add model type to the output
+  model_details$model_type <- "binomial"  # Add model type to the output
   return(model_details)
 }
 
@@ -117,6 +117,6 @@ fit_log_internal <- function(X, y, add_intercept) {
     aic = aic,
     summary = summary_table,
     fitted_values = p,
-    model_type = "logistic"  # Identifying the model type for prediction function
+    model_type = "binomial"  # Identifying the model type for prediction function
   ))
 }

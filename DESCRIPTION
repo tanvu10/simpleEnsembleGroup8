@@ -10,7 +10,7 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Imports:
-    MASS,
+    stats,
     glmnet,
     xgboost,
     e1071,

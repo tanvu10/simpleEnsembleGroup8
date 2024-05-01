@@ -6,8 +6,9 @@
 #' @param model_list List of model function names as character strings. Each model is assumed to return an object
 #' compatible with the predict_model function.
 #' @return A list containing combined predictions and details for each fitted model.
-#' @importFrom randomForest randomForest predict
-#' @importFrom glmnet glmnet cv.glmnet
+#' @import stats
+#' @import randomForest
+#' @importFrom randomForest randomForest predict glmnet glmnet cv.glmnet
 #' @examples
 #' \dontrun{
 #' data(mtcars)

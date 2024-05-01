@@ -9,8 +9,9 @@ fit_elastic_net_model(
   X,
   alpha = 0.5,
   lambda = NULL,
+  family = "gaussian",
   add_intercept = TRUE,
-  use_bagging = FALSE,
+  bagging = FALSE,
   R = 100
 )
 }
@@ -25,9 +26,9 @@ fit_elastic_net_model(
 
 \item{add_intercept}{Logical indicating whether to include an intercept in the model.}
 
-\item{use_bagging}{Logical for enabling bagging, using multiple bootstrap samples.}
-
 \item{R}{The number of bootstrap samples for bagging, applicable if bagging is TRUE.}
+
+\item{use_bagging}{Logical for enabling bagging, using multiple bootstrap samples.}
 }
 \value{
 A glmnet model object fitted using elastic net regularization, or an aggregated result from multiple

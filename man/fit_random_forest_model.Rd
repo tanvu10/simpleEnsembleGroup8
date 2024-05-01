@@ -4,15 +4,14 @@
 \alias{fit_random_forest_model}
 \title{Random Forest Model Fitting}
 \usage{
-fit_random_forest_model(y, X, add_intercept = FALSE)
+fit_random_forest_model(y, X, model_type = "gaussian")
 }
 \arguments{
 \item{y}{Response vector with continuous or binary outcomes.}
 
 \item{X}{Data frame of predictors, either numeric or factor types.}
 
-\item{add_intercept}{Logical indicating whether to include an intercept in the model.
-Random Forest does not use an intercept; this parameter is ignored.}
+\item{model_type}{A character string specifying the type of model: 'gaussian' for regression or 'binomial' for classification.}
 }
 \value{
 A list containing the random forest model object with model details and fitted values.
@@ -25,5 +24,5 @@ mean prediction (regression) of the individual trees.
 }
 \examples{
 data(mtcars)
-result_rf <- fit_random_forest_model(mtcars$mpg, mtcars[, -1], add_intercept = FALSE)
+result_rf <- fit_random_forest_model(mtcars$mpg, mtcars[, -1], model_type = 'gaussian')
 }

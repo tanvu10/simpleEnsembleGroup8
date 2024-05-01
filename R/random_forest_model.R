@@ -6,27 +6,38 @@
 #'
 #' @param y Response vector with continuous or binary outcomes.
 #' @param X Data frame of predictors, either numeric or factor types.
-#' @param add_intercept Logical indicating whether to include an intercept in the model.
-#'                      Random Forest does not use an intercept; this parameter is ignored.
+#' @param model_type A character string specifying the type of model: 'gaussian' for regression or 'binomial' for classification.
 #' @return A list containing the random forest model object with model details and fitted values.
 #' @importFrom randomForest randomForest
 #' @export
 #' @examples
 #' data(mtcars)
-#' result_rf <- fit_random_forest_model(mtcars$mpg, mtcars[, -1], add_intercept = FALSE)
-fit_random_forest_model <- function(y, X, add_intercept = FALSE) {
+#' result_rf <- fit_random_forest_model(mtcars$mpg, mtcars[, -1], model_type = 'gaussian')
+fit_random_forest_model <- function(y, X, model_type = 'gaussian') {
   # Ensure the randomForest package is loaded
   if (!requireNamespace("randomForest", quietly = TRUE)) {
     stop("Package 'randomForest' needs to be installed.")
   }
 
-  # Random forest does not use an intercept. The parameter is thus ignored.
+  # Check if model_type is correctly specified
+  if (!model_type %in% c('gaussian', 'binomial')) {
+    stop("model_type must be either 'gaussian' for regression or 'binomial' for classification")
+  }
+
+  # Convert y to factor if model_type is 'binomial' for classification
+  if (model_type == 'binomial') {
+    y <- factor(y)
+  }
+
   # Add y as a temporary column in X for the formula interface
   X$y <- y
   formula <- as.formula("y ~ .")
 
+  # Determine the appropriate type for the randomForest model
+  type <- if (model_type == 'gaussian') "regression" else "classification"
+
   # Fit the model using the formula interface
-  rf_model <- randomForest::randomForest(formula, data = X)
+  rf_model <- randomForest::randomForest(formula, data = X, type = type)
 
   # Remove the temporary column
   X$y <- NULL

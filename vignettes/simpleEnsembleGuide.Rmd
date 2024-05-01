@@ -34,7 +34,7 @@ y <- rbinom(n, size = 1, prob = prob)
 # Combine into a data frame
 dataset <- data.frame(y = y, X1 = X1, X2 = X2, X3 = X3)
 #Running the custom logistic function 
-results <- fit_elastic_net_model(X = dataset[, -1], y = dataset$y, bagging=TRUE)
+results <- fit_random_forest_model(X = dataset[, -1], y = dataset$y, model_type = 'binomial')
 results
 
 ```

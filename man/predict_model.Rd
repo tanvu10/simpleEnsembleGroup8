@@ -4,21 +4,21 @@
 \alias{predict_model}
 \title{Predict Method for Regression Models}
 \usage{
-predict_model(model, newdata, type = "response")
+predict_model(model, newdata, type = "response", threshold = 0.5)
 }
 \arguments{
-\item{model}{The model object returned by fitting functions.}
+\item{model}{The model object returned by fitting functions which should include coefficients and model type.}
 
 \item{newdata}{New data on which to predict responses.}
 
-\item{type}{The type of prediction required: "response" for predicted values, "coefficients" for model coefficients
-(not applicable for Random Forest), or "probabilities" for logistic regression probability estimates.}
+\item{type}{The type of prediction required: "response" for predicted values or "probabilities" for logistic regression probability estimates.}
+
+\item{threshold}{Optional threshold for converting probabilities to binary outcomes in binomial models (default is 0.5).}
 }
 \value{
-Predicted values, coefficients, or probabilities based on the input model and specified type.
+Predicted values or probabilities based on the input model and specified type.
 }
 \description{
 Generates predictions from regression models fitted using various techniques,
-including standard, bagged approaches, and Random Forest. Handles linear, logistic, elastic net models,
-and Random Forest.
+including Lasso, Ridge, Elastic Net models using glmnet, and Random Forest.
 }

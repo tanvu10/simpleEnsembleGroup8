@@ -45,7 +45,7 @@ fit_linear_model <- function(y, X, add_intercept = TRUE, bagging = FALSE, R = 10
     }, R)
   }
 
-  model_details$model_type <- "linear"  # Identify the model type for predict_model compatibility
+  model_details$model_type <- "gaussian"  # Identify the model type for predict_model compatibility
   return(model_details)
 }
 
@@ -112,7 +112,7 @@ fit_linear_internal <- function(y, X, add_intercept) {
     rss = rss,
     tss = tss,
     summary = summary_table,
-    model_type = "linear"  # Identify the model type
+    model_type = "gaussian"  # Identifying the model type for prediction function
   ))
 }
 

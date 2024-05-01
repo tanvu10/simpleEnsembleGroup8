@@ -42,14 +42,18 @@
 #' data(mtcars)
 #' result <- fit_elastic_net_model(mtcars$mpg, mtcars[, c("hp", "wt")], alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
 #' print(result)
-fit_elastic_net_model <- function(y, X, alpha = 0.5, lambda = NULL, add_intercept = TRUE, bagging = FALSE, R = 100) {
+fit_elastic_net_model <- function(y, X, alpha = 0.5, lambda = NULL, family = "gaussian", add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 
   if (!is.numeric(alpha) || alpha < 0 || alpha > 1) {
     stop("'alpha' must be a number between 0 and 1")
   }
 
-  family <- if (all(y %in% c(0, 1))) "binomial" else "gaussian"
+  # family <- if (all(y %in% c(0, 1))) "binomial" else "gaussian"
+
+  if (!family %in% c("binomial", "gaussian")) {
+    stop("'family' must be either 'binomial' or 'gaussian'")
+  }
 
   if (is.null(lambda)) {
     cv_fit <- cv.glmnet(x = as.matrix(X), y = y, alpha = alpha, family = family, intercept = add_intercept)
@@ -71,7 +75,7 @@ fit_elastic_net_model <- function(y, X, alpha = 0.5, lambda = NULL, add_intercep
 
 
 
-  model_details$model_type <- "elastic_net"  # Adding model type identifier
+  model_details$model_type <- family  # Identifying the model type for prediction function
   return(model_details)
 }
 

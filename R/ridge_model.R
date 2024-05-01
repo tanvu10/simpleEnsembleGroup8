@@ -19,10 +19,14 @@
 #' @examples
 #' data(mtcars)
 #' result_ridge <- fit_ridge_model(mtcars$mpg, mtcars[, c("hp", "wt")], add_intercept = TRUE, bagging = FALSE)
-fit_ridge_model <- function(y, X, lambda = NULL, add_intercept = TRUE, bagging = FALSE, R = 100) {
+fit_ridge_model <- function(y, X, lambda = NULL, family = "gaussian", add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 
-  family <- if (all(y %in% c(0, 1))) "binomial" else "gaussian"
+  # family <- if (all(y %in% c(0, 1))) "binomial" else "gaussian"
+
+  if (!family %in% c("binomial", "gaussian")) {
+    stop("'family' must be either 'binomial' or 'gaussian'")
+  }
 
   if (is.null(lambda)) {
     cv_fit <- cv.glmnet(x = as.matrix(X), y = y, alpha = 0, family = family, intercept = add_intercept)
@@ -41,7 +45,7 @@ fit_ridge_model <- function(y, X, lambda = NULL, add_intercept = TRUE, bagging =
     list(model = glmnet_model, lambda = lambda, coefficients = coefficients, fitted_values = fitted_values)
     }
 
-  model_details$model_type <- "ridge"  # Adding model type identifier
+  model_details$model_type <- family  # Identifying the model type for prediction function
   return(model_details)
 }
 
