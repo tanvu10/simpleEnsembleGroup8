@@ -7,6 +7,13 @@
 #' @return Invisible TRUE if inputs are valid, otherwise throws an error.
 #' @export
 validate_inputs <- function(y, X) {
+
+  if (any(is.na(X))) {
+    stop("Predictor variables X should not contain NA values.")
+  }
+  if (is.data.frame(X) && any(is.na(X))) {
+    stop("Data frame X should not contain NA values.")
+  }
   if (!is.numeric(y) && !is.factor(y)) {
     stop("Response variable y must be numeric or a factor.")
   }

@@ -17,3 +17,10 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(simpleEnsembleGroup8)
 ```
+
+```{r}
+data(airquality)
+clean_airquality <- na.omit(airquality)
+model2 <- fit_linear_model(clean_airquality$Solar.R, clean_airquality[, -1], add_intercept = TRUE, bagging = FALSE)
+```
+
