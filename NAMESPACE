@@ -1,5 +1,5 @@
 exportPattern("^[[:alpha:]]+")
-importFrom(glmnet, glmnet)
+importFrom(glmnet, glmnet, cv.glmnet)
 importFrom(e1071, svm)
 importFrom(randomForest, randomForest)
 importFrom(xgboost, xgboost)

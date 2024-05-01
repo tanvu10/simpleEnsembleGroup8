@@ -34,12 +34,9 @@ y <- rbinom(n, size = 1, prob = prob)
 # Combine into a data frame
 dataset <- data.frame(y = y, X1 = X1, X2 = X2, X3 = X3)
 #Running the custom logistic function 
-results <- fit_logistic_model(X = dataset[, -1], y = dataset$y)
-print(results$summary)
-# Fit logistic regression model using glm r built in 
-glm_model <- glm(y ~ ., data = dataset, family = binomial())
-# Print the summary of the glm model
-summary(glm_model)
+results <- fit_ridge_model(X = dataset[, -1], y = dataset$y, bagging=TRUE)
+results
+
 ```
 
 
