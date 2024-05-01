@@ -42,7 +42,7 @@
 #' data(mtcars)
 #' result <- fit_elastic_net_model(mtcars$mpg, mtcars[, c("hp", "wt")], alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
 #' print(result)
-fit_elastic_net_model <- function(y, X, alpha = 0.5, lambda = NULL, add_intercept = TRUE, use_bagging = FALSE, R = 100) {
+fit_elastic_net_model <- function(y, X, alpha = 0.5, lambda = NULL, add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 
   if (!is.numeric(alpha) || alpha < 0 || alpha > 1) {
@@ -70,16 +70,6 @@ fit_elastic_net_model <- function(y, X, alpha = 0.5, lambda = NULL, add_intercep
   }
 
 
-  model_details <- if (use_bagging) {
-    # Perform bagging with the specified number of bootstrap samples
-    perform_bagging(y, X, function(y_sample, X_sample) {
-      glmnet_model <- glmnet(x = as.matrix(X_sample), y = y_sample, alpha = alpha, lambda = lambda, family = family, intercept = add_intercept)
-      list(coefficients = coef(glmnet_model), fitted_values = predict(glmnet_model, newx = as.matrix(X_sample), type = "response"))
-    }, R)
-  } else {
-    glmnet_model <- glmnet(x = as.matrix(X), y = y, alpha = alpha, lambda = lambda, family = family, intercept = add_intercept)
-    list(model = glmnet_model, lambda = lambda, alpha = alpha)
-  }
 
   model_details$model_type <- "elastic_net"  # Adding model type identifier
   return(model_details)
