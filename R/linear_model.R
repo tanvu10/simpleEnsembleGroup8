@@ -18,7 +18,12 @@
 #' data(mtcars)
 #' model <- fit_linear_model(mtcars$mpg, mtcars[, -1], add_intercept = TRUE, bagging = FALSE)
 #' print(model$summary)
-fit_linear_model <- function(y, X, add_intercept = TRUE, bagging = FALSE, R = 100) {
+fit_linear_model <- function(y, X, model_type = "gaussian",add_intercept = TRUE, bagging = FALSE, R = 100) {
+
+  # Ensure the model type is always 'gaussian'
+  if (model_type != "gaussian") {
+    stop("Invalid model type. Only 'gaussian' is supported.")
+  }
 
   # Ensure this function is defined to validate y and X
   validate_inputs(y, X)
@@ -45,7 +50,8 @@ fit_linear_model <- function(y, X, add_intercept = TRUE, bagging = FALSE, R = 10
     }, R)
   }
 
-  model_details$model_type <- "gaussian"  # Identify the model type for predict_model compatibility
+  model_details$model_type <- model_type  # Identify the model type for predict_model compatibility
+  model_details$names <- colnames(X)
   return(model_details)
 }
 
@@ -96,6 +102,9 @@ fit_linear_internal <- function(y, X, add_intercept) {
   } else {
     stop("Mismatch in the number of coefficients and predictor names")
   }
+
+
+  names(coefficients) <- colnames(X)
 
   # Return a detailed list
   return(list(

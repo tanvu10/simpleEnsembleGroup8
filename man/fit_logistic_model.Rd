@@ -4,7 +4,14 @@
 \alias{fit_logistic_model}
 \title{Fit Logistic Regression Model with Optional Bagging and Intercept}
 \usage{
-fit_logistic_model(X, y, add_intercept = TRUE, bagging = FALSE, R = 100)
+fit_logistic_model(
+  X,
+  y,
+  model_type = "binomial",
+  add_intercept = TRUE,
+  bagging = FALSE,
+  R = 100
+)
 }
 \arguments{
 \item{X}{Predictor variables, matrix or data frame.}

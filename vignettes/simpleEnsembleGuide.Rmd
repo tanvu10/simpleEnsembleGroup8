@@ -19,23 +19,16 @@ library(simpleEnsembleGroup8)
 ```
 
 ```{r}
-set.seed(123)  # for reproducibility
-# Number of observations
-n <- 500
-# Generate predictors
-X1 <- rnorm(n, mean = 50, sd = 10)  # Normal distribution for X1
-X2 <- rbinom(n, size = 1, prob = 0.5)  # Binary variable for X2
-X3 <- rpois(n, lambda = 3)  # Poisson distribution for X3
-# Generate binary response variable, y
-# Logistic model: logit(P(y = 1)) = -1 + 0.02*X1 - 0.5*X2 + 0.1*X3
-logit <- -1 + 0.02*X1 - 0.5*X2 + 0.1*X3
-prob <- exp(logit) / (1 + exp(logit))
-y <- rbinom(n, size = 1, prob = prob)
-# Combine into a data frame
-dataset <- data.frame(y = y, X1 = X1, X2 = X2, X3 = X3)
-#Running the custom logistic function 
-results <- fit_random_forest_model(X = dataset[, -1], y = dataset$y, model_type = 'binomial')
-results
+data(mtcars)
+X <- mtcars[, -which(names(mtcars) == "mpg")]
+y <- mtcars$mpg  # For gaussian; use a binary response for 'binomial'
+
+model_linear = fit_lasso_model(y, X, bagging=TRUE)
+model_linear
+model_list <- c("fit_linear_model", "fit_lasso_model")
+# model_list <- c("fit_logistic_model")
+# results <- ensemble_model_fitting(X, y, model_type = 'gaussian', model_list = model_list)
+# print(results)
 
 ```
 

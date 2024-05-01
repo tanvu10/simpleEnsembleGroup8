@@ -11,18 +11,39 @@ predict_model <- function(model, newdata, type = "response", threshold = 0.5) {
     stop("The model object does not have a 'model_type' attribute.")
   }
 
-  # Ensure newdata is a data frame or matrix
   if (!is.data.frame(newdata) && !is.matrix(newdata)) {
     stop("newdata must be a data frame or matrix.")
   }
 
+
+  # Extract model variables and check if 'Intercept' is required
+  if (is.null(model$names)) {
+    stop("Model coefficients are not named or missing.")
+  }
+  model_vars <- model$names
+
+  needs_intercept <- "Intercept" %in% model_vars
+
+  # Add an intercept if it's part of the model but not in newdata
+  if (needs_intercept && !"Intercept" %in% colnames(newdata)) {
+    newdata <- cbind(Intercept = 1, newdata)
+  }
+
+
+  # Ensure newdata contains all the necessary predictors
+  if (any(!model_vars %in% colnames(newdata))) {
+    missing_vars <- model_vars[!model_vars %in% colnames(newdata)]
+    stop("newdata is missing required columns: ", paste(missing_vars, collapse=", "))
+  }
+
+
+  # Ensure that newdata variables are in the correct order
+  newdata_matrix <- as.matrix(newdata[, model_vars, drop = FALSE])
+
   # Handle prediction based on model type
   switch(model$model_type,
          binomial = {
-           if (!"coefficients" %in% names(model)) {
-             stop("The model object does not appear to have valid coefficients for binomial model.")
-           }
-           eta <- as.matrix(newdata) %*% model$coefficients
+           eta <- newdata_matrix %*% model$coefficients
            probabilities <- 1 / (1 + exp(-eta))  # Logistic transformation
            if (type == "response") {
              return(ifelse(probabilities > threshold, 1, 0))  # Convert probabilities to binary outcome
@@ -33,11 +54,8 @@ predict_model <- function(model, newdata, type = "response", threshold = 0.5) {
            }
          },
          gaussian = {
-           if (!"coefficients" %in% names(model)) {
-             stop("The model object does not appear to have valid coefficients for gaussian model.")
-           }
            if (type == "response") {
-             return(as.matrix(newdata) %*% model$coefficients)  # Linear prediction
+             return(newdata_matrix %*% model$coefficients)  # Linear prediction
            } else {
              stop("Invalid 'type' specified for gaussian model. Only 'response' is valid.")
            }
@@ -52,3 +70,5 @@ predict_model <- function(model, newdata, type = "response", threshold = 0.5) {
          stop("Unsupported model type provided.")
   )
 }
+
+

@@ -19,33 +19,43 @@
 #' @examples
 #' data(mtcars)
 #' result_ridge <- fit_ridge_model(mtcars$mpg, mtcars[, c("hp", "wt")], add_intercept = TRUE, bagging = FALSE)
-fit_ridge_model <- function(y, X, lambda = NULL, family = "gaussian", add_intercept = TRUE, bagging = FALSE, R = 100) {
+fit_ridge_model <- function(y, X, lambda = NULL, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 
   # family <- if (all(y %in% c(0, 1))) "binomial" else "gaussian"
 
-  if (!family %in% c("binomial", "gaussian")) {
+  if (!model_type %in% c("binomial", "gaussian")) {
     stop("'family' must be either 'binomial' or 'gaussian'")
   }
 
   if (is.null(lambda)) {
-    cv_fit <- cv.glmnet(x = as.matrix(X), y = y, alpha = 0, family = family, intercept = add_intercept)
+    cv_fit <- cv.glmnet(x = as.matrix(X), y = y, alpha = 0, family = model_type, intercept = add_intercept)
     lambda <- cv_fit$lambda.min
   }
 
   model_details <- if (bagging) {
     perform_bagging(y, X, function(y_sample, X_sample) {
-      glmnet_model <- glmnet(x = as.matrix(X_sample), y = y_sample, alpha = 0, lambda = lambda, family = family, intercept = add_intercept)
+      glmnet_model <- glmnet(x = as.matrix(X_sample), y = y_sample, alpha = 0, lambda = lambda, family = model_type, intercept = add_intercept)
       list(coefficients = coef(glmnet_model), fitted_values = predict(glmnet_model, newx = as.matrix(X_sample), type = "response"))
     }, R)
   } else {
-    glmnet_model <- glmnet(x = as.matrix(X), y = y, alpha = 0, lambda = lambda, family = family, intercept = add_intercept)
+    glmnet_model <- glmnet(x = as.matrix(X), y = y, alpha = 0, lambda = lambda, family = model_type, intercept = add_intercept)
     coefficients <- coef(glmnet_model, s = "lambda.min")  # Include intercept if add_intercept is TRUE
     fitted_values <- predict(glmnet_model, newx = as.matrix(X), type = "response", s = "lambda.min")
     list(model = glmnet_model, lambda = lambda, coefficients = coefficients, fitted_values = fitted_values)
     }
 
-  model_details$model_type <- family  # Identifying the model type for prediction function
+  model_details$model_type <- model_type  # Identifying the model type for prediction function
+
+
+  # Assign coefficient names including intercept if applicable
+  if (add_intercept) {
+    model_details$names <- c("Intercept", colnames(X))
+  } else {
+    model_details$names <- colnames(X)
+  }
+
+
   return(model_details)
 }
 

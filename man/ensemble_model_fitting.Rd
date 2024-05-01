@@ -4,28 +4,37 @@
 \alias{ensemble_model_fitting}
 \title{Ensemble Model Fitting Using Standardized Prediction}
 \usage{
-ensemble_model_fitting(data, response_var, model_list)
+ensemble_model_fitting(X, y, model_type, model_list, threshold = 0.5)
 }
 \arguments{
-\item{data}{Data frame containing the training dataset including the response variable.}
+\item{X}{Data frame or matrix of predictors.}
 
-\item{response_var}{Name of the response variable in the data frame.}
+\item{y}{Vector of response variables.}
 
-\item{model_list}{List of model function names as character strings. Each model is assumed to return an object
-compatible with the predict_model function.}
+\item{model_type}{Character specifying whether to fit models for 'gaussian' (regression) or 'binomial' (classification).}
+
+\item{model_list}{List of model fitting functions expressed as character strings.}
+
+\item{threshold}{Threshold for converting probabilities to class labels in case of 'binomial' model type, default is 0.5.}
 }
 \value{
-A list containing combined predictions and details for each fitted model.
+A list containing combined predictions and details for each fitted model including individual model predictions.
 }
 \description{
-This function fits multiple models to the same dataset and combines their predictions using a
-standardized prediction method. Supports various regression model types.
+Fits multiple models specified by the model list to the same dataset and combines their predictions using a
+standardized prediction method. Supports regression (gaussian) and classification (binomial) types.
 }
 \examples{
 \dontrun{
-data(mtcars)
-model_functions <- c("fit_ridge_model", "fit_logistic_model", "fit_random_forest_model")
-result <- ensemble_model_fitting(mtcars, "mpg", model_functions)
-print(result$combined_predictions)
+  # Assuming `fit_linear_model` and `fit_logistic_model` are defined elsewhere in your package.
+  data(mtcars)
+  X <- mtcars[, -which(names(mtcars) == "mpg")]
+  y <- mtcars$mpg  # For gaussian; use a binary response for 'binomial'
+  model_list <- c("fit_linear_model", "fit_lasso_model")
+  results <- ensemble_model_fitting(X, y, model_type = 'gaussian', model_list = model_list)
+  print(results$combined_predictions)
+  # To view individual model details and predictions:
+  print(results$model_details)
+  print(results$individual_predictions)
 }
 }

@@ -9,7 +9,7 @@ fit_elastic_net_model(
   X,
   alpha = 0.5,
   lambda = NULL,
-  family = "gaussian",
+  model_type = "gaussian",
   add_intercept = TRUE,
   bagging = FALSE,
   R = 100

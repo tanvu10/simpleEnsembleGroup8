@@ -1,47 +1,56 @@
 #' @title Ensemble Model Fitting Using Standardized Prediction
-#' @description This function fits multiple models to the same dataset and combines their predictions using a
-#' standardized prediction method. Supports various regression model types.
-#' @param data Data frame containing the training dataset including the response variable.
-#' @param response_var Name of the response variable in the data frame.
-#' @param model_list List of model function names as character strings. Each model is assumed to return an object
-#' compatible with the predict_model function.
-#' @return A list containing combined predictions and details for each fitted model.
-#' @import stats
-#' @import randomForest
-#' @importFrom randomForest randomForest predict glmnet glmnet cv.glmnet
+#' @description Fits multiple models specified by the model list to the same dataset and combines their predictions using a
+#' standardized prediction method. Supports regression (gaussian) and classification (binomial) types.
+#' @param X Data frame or matrix of predictors.
+#' @param y Vector of response variables.
+#' @param model_type Character specifying whether to fit models for 'gaussian' (regression) or 'binomial' (classification).
+#' @param model_list List of model fitting functions expressed as character strings.
+#' @param threshold Threshold for converting probabilities to class labels in case of 'binomial' model type, default is 0.5.
+#' @return A list containing combined predictions and details for each fitted model including individual model predictions.
+#' @export
 #' @examples
 #' \dontrun{
-#' data(mtcars)
-#' model_functions <- c("fit_ridge_model", "fit_logistic_model", "fit_random_forest_model")
-#' result <- ensemble_model_fitting(mtcars, "mpg", model_functions)
-#' print(result$combined_predictions)
+#'   # Assuming `fit_linear_model` and `fit_logistic_model` are defined elsewhere in your package.
+#'   data(mtcars)
+#'   X <- mtcars[, -which(names(mtcars) == "mpg")]
+#'   y <- mtcars$mpg  # For gaussian; use a binary response for 'binomial'
+#'   model_list <- c("fit_linear_model", "fit_lasso_model")
+#'   results <- ensemble_model_fitting(X, y, model_type = 'gaussian', model_list = model_list)
+#'   print(results$combined_predictions)
+#'   # To view individual model details and predictions:
+#'   print(results$model_details)
+#'   print(results$individual_predictions)
 #' }
-#' @export
-ensemble_model_fitting <- function(data, response_var, model_list) {
+ensemble_model_fitting <- function(X, y, model_type, model_list, threshold = 0.5) {
   predictions_list <- list()
   model_details_list <- list()
 
-  for (model_function in model_list) {
-    # Extract the response and predictors
-    y <- data[[response_var]]
-    X <- data[, setdiff(names(data), response_var), drop = FALSE]
-
-    # Dynamically call the model fitting function
-    model_fit <- do.call(model_function, list(y = y, X = X))
-
-    # Use the general prediction function to get predictions for the training data
-    predictions <- predict_model(model_fit, newdata = X, type = "response")
-
-    # Store predictions and model details
-    predictions_list[[length(predictions_list) + 1]] <- predictions
-    model_details_list[[length(model_details_list) + 1]] <- model_fit
+  if (!model_type %in% c('gaussian', 'binomial')) {
+    stop("Unsupported model type provided: ", model_type)
   }
 
-  # Combine predictions - average for regression
-  combined_predictions <- Reduce("+", predictions_list) / length(predictions_list)
+  for (model_name in model_list) {
+    print(model_name)
+    model_function <- match.fun(model_name)
+    model_fit <- model_function(y = y, X = X, model_type = model_type)
+    pred_type <- if (model_type == 'binomial') "probabilities" else "response"
+    predictions <- predict_model(model_fit, newdata = X, type = pred_type)
+    predictions_list[[length(predictions_list) + 1]] <- predictions
+    model_details_list[[length(model_details_list) + 1]] <- model_fit
+
+  }
+
+  combined_predictions <- if (model_type == 'gaussian') {
+    Reduce("+", predictions_list) / length(predictions_list)
+  } else {
+    average_probabilities <- Reduce("+", predictions_list) / length(predictions_list)
+    final_classes <- ifelse(average_probabilities > threshold, 1, 0)
+    list(probabilities = average_probabilities, final_classes = final_classes)
+  }
 
   return(list(
     combined_predictions = combined_predictions,
+    individual_predictions = predictions_list,
     model_details = model_details_list
   ))
 }

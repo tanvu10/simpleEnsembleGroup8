@@ -4,7 +4,14 @@
 \alias{fit_linear_model}
 \title{Linear Regression Model Fitting with Optional Bagging}
 \usage{
-fit_linear_model(y, X, add_intercept = TRUE, bagging = FALSE, R = 100)
+fit_linear_model(
+  y,
+  X,
+  model_type = "gaussian",
+  add_intercept = TRUE,
+  bagging = FALSE,
+  R = 100
+)
 }
 \arguments{
 \item{y}{Response variable, numeric vector.}

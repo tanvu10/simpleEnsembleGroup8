@@ -17,7 +17,13 @@
 #' y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
 #' model <- logistic_reg(X, y, add_intercept = TRUE, bagging = FALSE)
 #' print(model$summary)
-fit_logistic_model <- function(X, y, add_intercept = TRUE, bagging = FALSE, R = 100) {
+fit_logistic_model <- function(X, y, model_type = "binomial", add_intercept = TRUE, bagging = FALSE, R = 100) {
+
+  # Ensure the model type is always 'binomial'
+  if (model_type != "binomial") {
+    stop("Invalid model type. Only 'binomial' is supported.")
+  }
+
   validate_inputs(y, X)
 
   if (add_intercept && !"Intercept" %in% colnames(X)) {
@@ -44,7 +50,9 @@ fit_logistic_model <- function(X, y, add_intercept = TRUE, bagging = FALSE, R = 
     }, R)
   }
 
-  model_details$model_type <- "binomial"  # Add model type to the output
+  model_details$model_type <- model_type  # Add model type to the output
+  model_details$names <- colnames(X)
+
   return(model_details)
 }
 
@@ -105,6 +113,8 @@ fit_log_internal <- function(X, y, add_intercept) {
   } else {
     stop("Mismatch in the number of coefficients and predictor names")
   }
+
+  names(beta) <- colnames(X)
 
   # Return a detailed list
   return(list(
