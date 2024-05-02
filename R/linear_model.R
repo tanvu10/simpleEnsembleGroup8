@@ -17,7 +17,7 @@
 #' @examples
 #' data(mtcars)
 #' model <- fit_linear_model(mtcars$mpg, mtcars[, -1], add_intercept = TRUE, bagging = FALSE)
-#' print(model$summary)
+#' print(model)
 fit_linear_model <- function(y, X, model_type = "gaussian",add_intercept = TRUE, bagging = FALSE, R = 100) {
 
   # Ensure the model type is always 'gaussian'

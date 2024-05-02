@@ -9,18 +9,16 @@
 #' @return A list containing combined predictions and details for each fitted model including individual model predictions.
 #' @export
 #' @examples
-#' \dontrun{
-#'   # Assuming `fit_linear_model` and `fit_logistic_model` are defined elsewhere in your package.
+#'   # Assuming `fit_linear_model` and `fit_random_forest_model` are used.
 #'   data(mtcars)
 #'   X <- mtcars[, -which(names(mtcars) == "mpg")]
 #'   y <- mtcars$mpg  # For gaussian; use a binary response for 'binomial'
-#'   model_list <- c("fit_linear_model", "fit_lasso_model")
+#'   model_list <- c("fit_linear_model", "fit_random_forest_model")
 #'   results <- ensemble_model_fitting(X, y, model_type = 'gaussian', model_list = model_list)
 #'   print(results$combined_predictions)
 #'   # To view individual model details and predictions:
 #'   print(results$model_details)
 #'   print(results$individual_predictions)
-#' }
 ensemble_model_fitting <- function(X, y, model_type, model_list, threshold = 0.5) {
   predictions_list <- list()
   model_details_list <- list()

@@ -5,8 +5,8 @@
 \title{Fit Logistic Regression Model with Optional Bagging and Intercept}
 \usage{
 fit_logistic_model(
-  X,
   y,
+  X,
   model_type = "binomial",
   add_intercept = TRUE,
   bagging = FALSE,
@@ -14,9 +14,9 @@ fit_logistic_model(
 )
 }
 \arguments{
-\item{X}{Predictor variables, matrix or data frame.}
+\item{y}{Response variable, binary vector (must contain only two unique values).}
 
-\item{y}{Response variable, binary vector.}
+\item{X}{Predictor variables, matrix or data frame.}
 
 \item{add_intercept}{Logical, if TRUE, an intercept term is added to the model.}
 
@@ -39,8 +39,8 @@ X <- iris[iris$Species != "setosa", c("Sepal.Length", "Sepal.Width")]
 y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
 
 # Fit the logistic regression model without bagging
-model <- fit_logistic_model(X, y, add_intercept = TRUE, bagging = FALSE)
+model <- fit_logistic_model(y, X, add_intercept = TRUE, bagging = FALSE)
 
 # Print the model summary which includes coefficients and other statistics
-print(model$summary)
+print(model)
 }

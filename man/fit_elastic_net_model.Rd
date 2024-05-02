@@ -33,8 +33,9 @@ fit_elastic_net_model(
 \item{use_bagging}{Logical for enabling bagging, using multiple bootstrap samples.}
 }
 \value{
-A glmnet model object fitted using elastic net regularization, or an aggregated result from multiple
-bootstrap samples if bagging is enabled.
+A list containing the elastic net regression model details, or if bagging is enabled, an aggregated
+result from multiple bootstrap samples including the model, lambda value, coefficients,
+and fitted values (continuous values for gaussian and probability values for binomial)
 }
 \description{
 This function fits an elastic net regression model, which utilizes both lasso and ridge regularization
@@ -47,6 +48,13 @@ in high-variance scenarios through bootstrap aggregating.
 data(mtcars)
 X <- mtcars[, c("hp", "wt")]
 y <- mtcars$mpg
-result_elastic_net <- fit_elastic_net_model(y, X, alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
-print(result_elastic_net)
+result_elastic_net_gaussian <- fit_elastic_net_model(y, X, alpha = 0.5, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE)
+print(result_elastic_net_gaussian)
+
+# Example for Binomial model
+data(mtcars)
+X <- mtcars[, c("hp", "wt")]
+y <- ifelse(mtcars$am == 1, 1, 0)  # Converting 'am' to a binary outcome
+result_elastic_net_binomial <- fit_elastic_net_model(y, X, alpha = 0.5, model_type = "binomial", add_intercept = TRUE, bagging = TRUE, R = 50)
+print(result_elastic_net_binomial)
 }

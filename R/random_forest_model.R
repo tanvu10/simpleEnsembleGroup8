@@ -7,12 +7,22 @@
 #' @param y Response vector with continuous or binary outcomes.
 #' @param X Data frame of predictors, either numeric or factor types.
 #' @param model_type A character string specifying the type of model: 'gaussian' for regression or 'binomial' for classification.
-#' @return A list containing the random forest model object with model details and fitted values.
+#' @return A list containing the random forest model object with model details
+#' and fitted values (continuous values for gaussian and probability values for binomial)
 #' @importFrom randomForest randomForest
 #' @export
 #' @examples
+#' # Example for regression
 #' data(mtcars)
-#' result_rf <- fit_random_forest_model(mtcars$mpg, mtcars[, -1], model_type = 'gaussian')
+#' result_rf_gaussian <- fit_random_forest_model(mtcars$mpg, mtcars[, -1], model_type = 'gaussian')
+#' print(result_rf_gaussian)
+#'
+#' # Example for classification
+#' data(iris)
+#' X <- iris[iris$Species != "setosa", c("Sepal.Length", "Sepal.Width")]
+#' y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
+#' result_rf_binomial <- fit_random_forest_model(y, X, model_type = 'binomial')
+#' print(result_rf_binomial)
 fit_random_forest_model <- function(y, X, model_type = 'gaussian') {
 
   validate_inputs(y, X)
@@ -43,7 +53,7 @@ fit_random_forest_model <- function(y, X, model_type = 'gaussian') {
   if (model_type == 'gaussian') {
     predictions <- predict(rf_model, newdata = X)  # Continuous values for regression
   } else {
-    predictions <- predict(rf_model, newdata = X, type = "class")  # Class labels for classification
+    predictions <- predict(rf_model, newdata = X, type = "prob")[,2]
   }
 
   # Compile model details

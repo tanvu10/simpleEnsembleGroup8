@@ -1,12 +1,16 @@
 Package: simpleEnsembleGroup8
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Ensemble Methods for Statistical Learning
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Group 8
+Maintainer: Group 8 <vu.huynh@stonybrook.edu>
+Description: This package provides tools for building predictive models using various 
+    ensemble methods. It supports linear and logistic regression, ridge regression, lasso regression, 
+    and elastic net models. Users can apply these models to both binary and continuous response variables,
+    and manage datasets with a high number of predictors. Additionally, the package includes options for 
+    bagging to improve model robustness and a feature for pre-screening the most informative predictors. 
+    It also supports combining different models for ensemble learning, thereby enhancing predictive performance.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -15,7 +19,7 @@ Imports:
     xgboost,
     e1071,
     randomForest
-Suggests: 
+Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

@@ -18,10 +18,10 @@
 #' y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
 #'
 #' # Fit the logistic regression model without bagging
-#' model <- fit_logistic_model(X, y, add_intercept = TRUE, bagging = FALSE)
+#' model <- fit_logistic_model(y, X, add_intercept = TRUE, bagging = FALSE)
 #'
 #' # Print the model summary which includes coefficients and other statistics
-#' print(model$summary)
+#' print(model)
 fit_logistic_model <- function(y, X, model_type = "binomial", add_intercept = TRUE, bagging = FALSE, R = 100) {
 
   # Ensure the model type is always 'binomial'

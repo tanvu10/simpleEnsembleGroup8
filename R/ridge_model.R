@@ -14,15 +14,24 @@
 #' @param bagging Logical indicating whether to perform bagging.
 #' @param R Integer specifying the number of bootstrap samples to use if bagging is enabled.
 #' @return A list containing the ridge regression model details, or if bagging is enabled, an aggregated
-#' result from multiple bootstrap samples including the model, lambda value, coefficients, and fitted values.
+#' result from multiple bootstrap samples including the model, lambda value, coefficients,
+#' and fitted values (continuous values for gaussian and probability values for binomial)
 #' @importFrom glmnet glmnet cv.glmnet
 #' @export
 #' @examples
+#' # Example for Gaussian model
 #' data(mtcars)
 #' X <- mtcars[, c("hp", "wt")]
 #' y <- mtcars$mpg
-#' result_ridge <- fit_ridge_model(y, X, add_intercept = TRUE, bagging = FALSE)
-#' print(result_ridge)
+#' result_ridge_gaussian <- fit_ridge_model(y, X, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE)
+#' print(result_ridge_gaussian)
+#'
+#' # Example for Binomial model
+#' data(mtcars)
+#' X <- mtcars[, c("hp", "wt")]
+#' y <- ifelse(mtcars$am == 1, 1, 0)  # Converting 'am' to a binary outcome
+#' result_ridge_binomial <- fit_ridge_model(y, X, model_type = "binomial", add_intercept = TRUE, bagging = TRUE, R = 50)
+#' print(result_ridge_binomial)
 fit_ridge_model <- function(y, X, lambda = NULL, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 

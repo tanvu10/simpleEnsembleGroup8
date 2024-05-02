@@ -61,11 +61,16 @@ predict_model <- function(model, newdata, type = "response", threshold = 0.5) {
            }
          },
          random_forest = {
-           if (type != "response") {
-             stop("Random Forest models can only return 'response' type predictions.")
+           if (type == "response") {
+             return(predict(model$model, newdata)) # it will return a label or a continuous value depending on the model type
+           }
+           else if (type == "probabilities") {
+             return(predict(model$model, newdata, type = "prob")[,2])
+           } else {
+             stop("Invalid 'type' specified for binomial model. Use 'response' or 'probabilities'.")
            }
            requireNamespace("randomForest", quietly = TRUE)
-           return(predict(model$model, newdata))  # Use the predict method for randomForest objects
+            # Use the predict method for randomForest objects
          },
          stop("Unsupported model type provided.")
   )

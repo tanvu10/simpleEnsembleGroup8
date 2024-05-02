@@ -37,5 +37,5 @@ When bagging is TRUE, performs bagging to improve the robustness of the model fi
 \examples{
 data(mtcars)
 model <- fit_linear_model(mtcars$mpg, mtcars[, -1], add_intercept = TRUE, bagging = FALSE)
-print(model$summary)
+print(model)
 }

@@ -13,16 +13,24 @@
 #' @param model_type Specifies the model type, 'gaussian' for regression or 'binomial' for classification.
 #' @param use_bagging Logical for enabling bagging, using multiple bootstrap samples.
 #' @param R The number of bootstrap samples for bagging, applicable if bagging is TRUE.
-#' @return A glmnet model object fitted using elastic net regularization, or an aggregated result from multiple
-#' bootstrap samples if bagging is enabled.
+#' @return A list containing the elastic net regression model details, or if bagging is enabled, an aggregated
+#' result from multiple bootstrap samples including the model, lambda value, coefficients,
+#' and fitted values (continuous values for gaussian and probability values for binomial)
 #' @importFrom glmnet glmnet cv.glmnet
 #' @export
 #' @examples
 #' data(mtcars)
 #' X <- mtcars[, c("hp", "wt")]
 #' y <- mtcars$mpg
-#' result_elastic_net <- fit_elastic_net_model(y, X, alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
-#' print(result_elastic_net)
+#' result_elastic_net_gaussian <- fit_elastic_net_model(y, X, alpha = 0.5, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE)
+#' print(result_elastic_net_gaussian)
+#'
+#' # Example for Binomial model
+#' data(mtcars)
+#' X <- mtcars[, c("hp", "wt")]
+#' y <- ifelse(mtcars$am == 1, 1, 0)  # Converting 'am' to a binary outcome
+#' result_elastic_net_binomial <- fit_elastic_net_model(y, X, alpha = 0.5, model_type = "binomial", add_intercept = TRUE, bagging = TRUE, R = 50)
+#' print(result_elastic_net_binomial)
 fit_elastic_net_model <- function(y, X, alpha = 0.5, lambda = NULL, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 

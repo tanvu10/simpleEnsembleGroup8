@@ -14,7 +14,8 @@ fit_random_forest_model(y, X, model_type = "gaussian")
 \item{model_type}{A character string specifying the type of model: 'gaussian' for regression or 'binomial' for classification.}
 }
 \value{
-A list containing the random forest model object with model details and fitted values.
+A list containing the random forest model object with model details
+and fitted values (continuous values for gaussian and probability values for binomial)
 }
 \description{
 Fits a random forest model to the data, useful for both regression and classification.
@@ -23,6 +24,15 @@ at training time and outputting the class that is the mode of the classes (class
 mean prediction (regression) of the individual trees.
 }
 \examples{
+# Example for regression
 data(mtcars)
-result_rf <- fit_random_forest_model(mtcars$mpg, mtcars[, -1], model_type = 'gaussian')
+result_rf_gaussian <- fit_random_forest_model(mtcars$mpg, mtcars[, -1], model_type = 'gaussian')
+print(result_rf_gaussian)
+
+# Example for classification
+data(iris)
+X <- iris[iris$Species != "setosa", c("Sepal.Length", "Sepal.Width")]
+y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
+result_rf_binomial <- fit_random_forest_model(y, X, model_type = 'binomial')
+print(result_rf_binomial)
 }

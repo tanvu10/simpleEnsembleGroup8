@@ -30,8 +30,9 @@ fit_lasso_model(
 \item{R}{The number of bootstrap samples to use if bagging is enabled.}
 }
 \value{
-A glmnet model object fitted with lasso regression, or if bagging is enabled, an aggregated result from
-multiple bootstrap samples.
+A list containing the lasso regression model details, or if bagging is enabled, an aggregated
+result from multiple bootstrap samples including the model, lambda value, coefficients,
+and fitted values (continuous values for gaussian and probability values for binomial)
 }
 \description{
 Performs lasso regression using glmnet, optimizing variable selection and shrinkage of coefficients
@@ -41,9 +42,17 @@ can automatically determine the optimal regularization penalty (lambda) via cros
 bagging can be applied to improve model accuracy and robustness against overfitting.
 }
 \examples{
+# Example for Gaussian model
 data(mtcars)
 X <- mtcars[, c("hp", "wt")]
 y <- mtcars$mpg
-result_lasso <- fit_lasso_model(y, X, add_intercept = TRUE, bagging = FALSE)
-print(result_lasso)
+result_lasso_gaussian <- fit_lasso_model(y, X, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE)
+print(result_lasso_gaussian)
+
+# Example for Binomial model
+data(mtcars)
+X <- mtcars[, c("hp", "wt")]
+y <- ifelse(mtcars$am == 1, 1, 0)  # Converting 'am' to a binary outcome
+result_lasso_binomial <- fit_lasso_model(y, X, model_type = "binomial", add_intercept = TRUE, bagging = TRUE, R = 50)
+print(result_lasso_binomial)
 }
