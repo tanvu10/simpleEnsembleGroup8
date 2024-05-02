@@ -2,7 +2,7 @@
 % Please edit documentation in R/elastic_net_model.R
 \name{fit_elastic_net_model}
 \alias{fit_elastic_net_model}
-\title{Elastic Net Regression Fitting}
+\title{Elastic Net Regression Model Fitting with Optional Bagging}
 \usage{
 fit_elastic_net_model(
   y,
@@ -24,6 +24,8 @@ fit_elastic_net_model(
 
 \item{lambda}{Regularization penalty parameter; auto-determined via cross-validation if NULL.}
 
+\item{model_type}{Specifies the model type, 'gaussian' for regression or 'binomial' for classification.}
+
 \item{add_intercept}{Logical indicating whether to include an intercept in the model.}
 
 \item{R}{The number of bootstrap samples for bagging, applicable if bagging is TRUE.}
@@ -33,17 +35,8 @@ fit_elastic_net_model(
 \value{
 A glmnet model object fitted using elastic net regularization, or an aggregated result from multiple
 bootstrap samples if bagging is enabled.
-
-A glmnet model object fitted using elastic net regularization, or an aggregated result from multiple
-bootstrap samples if bagging is enabled. The result includes the model type for enhanced prediction functionality.
 }
 \description{
-This function fits an elastic net regression model, which utilizes both lasso and ridge regularization
-techniques to improve model performance and interpretability. The function is effective for datasets with
-multicollinearity or more predictors than observations, adjusting the model complexity by blending L1 and L2
-penalties controlled by the alpha parameter. Optionally, bagging can be used to enhance stability and accuracy
-in high-variance scenarios through bootstrap aggregating.
-
 This function fits an elastic net regression model, which utilizes both lasso and ridge regularization
 techniques to improve model performance and interpretability. The function is effective for datasets with
 multicollinearity or more predictors than observations, adjusting the model complexity by blending L1 and L2
@@ -52,9 +45,8 @@ in high-variance scenarios through bootstrap aggregating.
 }
 \examples{
 data(mtcars)
-result <- fit_elastic_net_model(mtcars$mpg, mtcars[, c("hp", "wt")], alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
-print(result)
-data(mtcars)
-result <- fit_elastic_net_model(mtcars$mpg, mtcars[, c("hp", "wt")], alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
-print(result)
+X <- mtcars[, c("hp", "wt")]
+y <- mtcars$mpg
+result_elastic_net <- fit_elastic_net_model(y, X, alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
+print(result_elastic_net)
 }

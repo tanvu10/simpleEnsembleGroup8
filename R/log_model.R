@@ -1,10 +1,10 @@
-#' Fit Logistic Regression Model with Optional Bagging and Intercept
+#' @title Fit Logistic Regression Model with Optional Bagging and Intercept
 #'
-#' Fits a logistic regression model with optional bagging and the ability to include or exclude an intercept.
+#' @description Fits a logistic regression model with optional bagging and the ability to include or exclude an intercept.
 #' The function uses the Newton-Raphson method for optimization and supports categorical variables through dummy encoding.
 #'
 #' @param X Predictor variables, matrix or data frame.
-#' @param y Response variable, binary vector.
+#' @param y Response variable, binary vector (must contain only two unique values).
 #' @param add_intercept Logical, if TRUE, an intercept term is added to the model.
 #' @param bagging Logical, if TRUE, performs bagging.
 #' @param R Integer, number of bootstrap samples for bagging (only used if bagging is TRUE).
@@ -13,11 +13,16 @@
 #' @export
 #' @examples
 #' data(iris)
+#' # Prepare the data
 #' X <- iris[iris$Species != "setosa", c("Sepal.Length", "Sepal.Width")]
 #' y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
-#' model <- logistic_reg(X, y, add_intercept = TRUE, bagging = FALSE)
+#'
+#' # Fit the logistic regression model without bagging
+#' model <- fit_logistic_model(X, y, add_intercept = TRUE, bagging = FALSE)
+#'
+#' # Print the model summary which includes coefficients and other statistics
 #' print(model$summary)
-fit_logistic_model <- function(X, y, model_type = "binomial", add_intercept = TRUE, bagging = FALSE, R = 100) {
+fit_logistic_model <- function(y, X, model_type = "binomial", add_intercept = TRUE, bagging = FALSE, R = 100) {
 
   # Ensure the model type is always 'binomial'
   if (model_type != "binomial") {
@@ -25,6 +30,11 @@ fit_logistic_model <- function(X, y, model_type = "binomial", add_intercept = TR
   }
 
   validate_inputs(y, X)
+
+  # Ensure that y contains only binary outcomes 0 or 1
+  if (!all(y %in% c(0, 1))) {
+    stop("Invalid values in y. Only binary values 0 or 1 are allowed for logistic regression.")
+  }
 
   if (add_intercept && !"Intercept" %in% colnames(X)) {
     X <- cbind(Intercept = 1, X)

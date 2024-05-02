@@ -19,16 +19,35 @@ library(simpleEnsembleGroup8)
 ```
 
 ```{r}
+
+# continuous
 data(mtcars)
 X <- mtcars[, -which(names(mtcars) == "mpg")]
 y <- mtcars$mpg  # For gaussian; use a binary response for 'binomial'
+y <- as.numeric(y)
+model_randomfr = fit_random_forest_model(X, y, model_type = 'gaussian')
+model_randomfr
 
-model_linear = fit_lasso_model(y, X, bagging=TRUE)
-model_linear
-model_list <- c("fit_linear_model", "fit_lasso_model")
-# model_list <- c("fit_logistic_model")
+# model_linear
+model_list <- c("fit_linear_model", "fit_lasso_model", "fit_random_forest_model")
+# model_list <- c("fit_lasso_model")
 # results <- ensemble_model_fitting(X, y, model_type = 'gaussian', model_list = model_list)
+# results$combined_predictions
 # print(results)
+
+```
+```{r}
+X <- iris[iris$Species != "setosa", c("Sepal.Length", "Sepal.Width")]
+y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
+model <- fit_random_forest_model(X, y, model_type = 'binomial')
+model
+
+
+
+# model_list <- c("fit_logistic_model", "fit_lasso_model", "fit_random_forest_model")
+model_list <- c("fit_logistic_model")
+results <- ensemble_model_fitting(X, y, model_type = 'binomial', model_list = model_list)
+print(results)
 
 ```
 

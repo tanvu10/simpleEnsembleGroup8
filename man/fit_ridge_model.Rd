@@ -2,7 +2,7 @@
 % Please edit documentation in R/ridge_model.R
 \name{fit_ridge_model}
 \alias{fit_ridge_model}
-\title{Ridge Regression Fitting}
+\title{Fit Ridge Regression Model with Optional Bagging and Intercept}
 \usage{
 fit_ridge_model(
   y,
@@ -22,6 +22,8 @@ fit_ridge_model(
 \item{lambda}{Regularization penalty parameter for ridge regression; if NULL, it is determined via
 cross-validation.}
 
+\item{model_type}{A character string specifying whether to use 'gaussian' for regression or 'binomial' for classification.}
+
 \item{add_intercept}{Logical indicating whether to include an intercept in the model.}
 
 \item{bagging}{Logical indicating whether to perform bagging.}
@@ -29,8 +31,8 @@ cross-validation.}
 \item{R}{Integer specifying the number of bootstrap samples to use if bagging is enabled.}
 }
 \value{
-A glmnet model object fitted using ridge regression, or if bagging is enabled, an aggregated
-result from multiple bootstrap samples.
+A list containing the ridge regression model details, or if bagging is enabled, an aggregated
+result from multiple bootstrap samples including the model, lambda value, coefficients, and fitted values.
 }
 \description{
 Performs ridge regression using glmnet, optimizing the balance between model complexity
@@ -41,5 +43,8 @@ enhance model stability and prediction accuracy by aggregating results from mult
 }
 \examples{
 data(mtcars)
-result_ridge <- fit_ridge_model(mtcars$mpg, mtcars[, c("hp", "wt")], add_intercept = TRUE, bagging = FALSE)
+X <- mtcars[, c("hp", "wt")]
+y <- mtcars$mpg
+result_ridge <- fit_ridge_model(y, X, add_intercept = TRUE, bagging = FALSE)
+print(result_ridge)
 }

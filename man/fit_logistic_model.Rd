@@ -34,8 +34,13 @@ The function uses the Newton-Raphson method for optimization and supports catego
 }
 \examples{
 data(iris)
+# Prepare the data
 X <- iris[iris$Species != "setosa", c("Sepal.Length", "Sepal.Width")]
 y <- as.numeric(iris$Species[iris$Species != "setosa"] == "versicolor")
-model <- logistic_reg(X, y, add_intercept = TRUE, bagging = FALSE)
+
+# Fit the logistic regression model without bagging
+model <- fit_logistic_model(X, y, add_intercept = TRUE, bagging = FALSE)
+
+# Print the model summary which includes coefficients and other statistics
 print(model$summary)
 }

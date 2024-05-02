@@ -1,4 +1,4 @@
-#' @title Elastic Net Regression Fitting
+#' @title Elastic Net Regression Model Fitting with Optional Bagging
 #' @description This function fits an elastic net regression model, which utilizes both lasso and ridge regularization
 #' techniques to improve model performance and interpretability. The function is effective for datasets with
 #' multicollinearity or more predictors than observations, adjusting the model complexity by blending L1 and L2
@@ -10,6 +10,7 @@
 #' @param alpha The elastic net mixing parameter, ranging from 0 (ridge) to 1 (lasso).
 #' @param lambda Regularization penalty parameter; auto-determined via cross-validation if NULL.
 #' @param add_intercept Logical indicating whether to include an intercept in the model.
+#' @param model_type Specifies the model type, 'gaussian' for regression or 'binomial' for classification.
 #' @param use_bagging Logical for enabling bagging, using multiple bootstrap samples.
 #' @param R The number of bootstrap samples for bagging, applicable if bagging is TRUE.
 #' @return A glmnet model object fitted using elastic net regularization, or an aggregated result from multiple
@@ -18,30 +19,10 @@
 #' @export
 #' @examples
 #' data(mtcars)
-#' result <- fit_elastic_net_model(mtcars$mpg, mtcars[, c("hp", "wt")], alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
-#' print(result)
-#' @title Elastic Net Regression Fitting
-#' @description This function fits an elastic net regression model, which utilizes both lasso and ridge regularization
-#' techniques to improve model performance and interpretability. The function is effective for datasets with
-#' multicollinearity or more predictors than observations, adjusting the model complexity by blending L1 and L2
-#' penalties controlled by the alpha parameter. Optionally, bagging can be used to enhance stability and accuracy
-#' in high-variance scenarios through bootstrap aggregating.
-#'
-#' @param y Response vector with continuous or binary outcomes.
-#' @param X Predictor matrix, accepting numeric or factor types.
-#' @param alpha The elastic net mixing parameter, ranging from 0 (ridge) to 1 (lasso).
-#' @param lambda Regularization penalty parameter; auto-determined via cross-validation if NULL.
-#' @param add_intercept Logical indicating whether to include an intercept in the model.
-#' @param use_bagging Logical for enabling bagging, using multiple bootstrap samples.
-#' @param R The number of bootstrap samples for bagging, applicable if bagging is TRUE.
-#' @return A glmnet model object fitted using elastic net regularization, or an aggregated result from multiple
-#' bootstrap samples if bagging is enabled. The result includes the model type for enhanced prediction functionality.
-#' @importFrom glmnet glmnet cv.glmnet
-#' @export
-#' @examples
-#' data(mtcars)
-#' result <- fit_elastic_net_model(mtcars$mpg, mtcars[, c("hp", "wt")], alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
-#' print(result)
+#' X <- mtcars[, c("hp", "wt")]
+#' y <- mtcars$mpg
+#' result_elastic_net <- fit_elastic_net_model(y, X, alpha = 0.5, add_intercept = TRUE, use_bagging = TRUE)
+#' print(result_elastic_net)
 fit_elastic_net_model <- function(y, X, alpha = 0.5, lambda = NULL, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 

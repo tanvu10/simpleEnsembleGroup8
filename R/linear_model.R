@@ -1,6 +1,6 @@
-#' Linear Regression Model Fitting with Optional Bagging
+#' @title Linear Regression Model Fitting with Optional Bagging
 #'
-#' Fits a linear regression model using the least squares method. Supports both numerical
+#' @description Fits a linear regression model using the least squares method. Supports both numerical
 #' and categorical variables by converting categorical variables into dummy variables.
 #' When bagging is TRUE, performs bagging to improve the robustness of the model fit.
 #'

@@ -1,4 +1,4 @@
-#' @title Lasso Regression Fitting
+#' @title Lasso Regression Model Fitting with Optional Bagging
 #' @description Performs lasso regression using glmnet, optimizing variable selection and shrinkage of coefficients
 #' through L1 regularization. This approach is particularly useful in models with high dimensionality or
 #' multicollinearity among predictors. The function allows specifying whether to include an intercept and
@@ -9,6 +9,7 @@
 #' @param X Matrix of predictors, either numeric or factor types.
 #' @param lambda Regularization penalty parameter for lasso regression; if NULL, it is determined using cross-validation.
 #' @param add_intercept Logical indicating whether to include an intercept in the model.
+#' @param model_type Specifies the model type, 'gaussian' for regression or 'binomial' for classification.
 #' @param bagging Logical indicating whether to perform bagging.
 #' @param R The number of bootstrap samples to use if bagging is enabled.
 #' @return A glmnet model object fitted with lasso regression, or if bagging is enabled, an aggregated result from
@@ -17,7 +18,10 @@
 #' @export
 #' @examples
 #' data(mtcars)
-#' result_lasso <- fit_lasso_model(mtcars$mpg, mtcars[, c("hp", "wt")], add_intercept = TRUE, bagging = FALSE)
+#' X <- mtcars[, c("hp", "wt")]
+#' y <- mtcars$mpg
+#' result_lasso <- fit_lasso_model(y, X, add_intercept = TRUE, bagging = FALSE)
+#' print(result_lasso)
 fit_lasso_model <- function(y, X, lambda = NULL, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 

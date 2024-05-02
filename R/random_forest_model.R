@@ -14,12 +14,15 @@
 #' data(mtcars)
 #' result_rf <- fit_random_forest_model(mtcars$mpg, mtcars[, -1], model_type = 'gaussian')
 fit_random_forest_model <- function(y, X, model_type = 'gaussian') {
+
+  validate_inputs(y, X)
+
   # Ensure the randomForest package is loaded
   if (!requireNamespace("randomForest", quietly = TRUE)) {
     stop("Package 'randomForest' needs to be installed.")
   }
 
-  # Check if model_type is correctly specified
+  # Validate model type
   if (!model_type %in% c('gaussian', 'binomial')) {
     stop("model_type must be either 'gaussian' for regression or 'binomial' for classification")
   }
@@ -29,28 +32,31 @@ fit_random_forest_model <- function(y, X, model_type = 'gaussian') {
     y <- factor(y)
   }
 
-  # Add y as a temporary column in X for the formula interface
-  X$y <- y
-  formula <- as.formula("y ~ .")
+  # Fit the random forest model
+  if (model_type == 'gaussian') {
+    rf_model <- randomForest(x = X, y = y, type = "regression")
+  } else {
+    rf_model <- randomForest(x = X, y = y, type = "classification")
+  }
 
-  # Determine the appropriate type for the randomForest model
-  type <- if (model_type == 'gaussian') "regression" else "classification"
-
-  # Fit the model using the formula interface
-  rf_model <- randomForest::randomForest(formula, data = X, type = type)
-
-  # Remove the temporary column
-  X$y <- NULL
-
-  # Store predictions for the training set
-  predictions <- predict(rf_model, X)
+  # Extract predictions
+  if (model_type == 'gaussian') {
+    predictions <- predict(rf_model, newdata = X)  # Continuous values for regression
+  } else {
+    predictions <- predict(rf_model, newdata = X, type = "class")  # Class labels for classification
+  }
 
   # Compile model details
   model_details <- list(
     model_type = "random_forest",
     model = rf_model,
-    predictions = predictions
+    predictions = predictions,
+    names = colnames(X)  # Ensure names are taken from X without temporary 'y'
   )
 
   return(model_details)
 }
+
+
+
+

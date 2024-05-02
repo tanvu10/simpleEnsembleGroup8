@@ -37,7 +37,6 @@ ensemble_model_fitting <- function(X, y, model_type, model_list, threshold = 0.5
     predictions <- predict_model(model_fit, newdata = X, type = pred_type)
     predictions_list[[length(predictions_list) + 1]] <- predictions
     model_details_list[[length(model_details_list) + 1]] <- model_fit
-
   }
 
   combined_predictions <- if (model_type == 'gaussian') {

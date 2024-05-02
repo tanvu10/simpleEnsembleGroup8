@@ -2,7 +2,7 @@
 % Please edit documentation in R/lasso_model.R
 \name{fit_lasso_model}
 \alias{fit_lasso_model}
-\title{Lasso Regression Fitting}
+\title{Lasso Regression Model Fitting with Optional Bagging}
 \usage{
 fit_lasso_model(
   y,
@@ -20,6 +20,8 @@ fit_lasso_model(
 \item{X}{Matrix of predictors, either numeric or factor types.}
 
 \item{lambda}{Regularization penalty parameter for lasso regression; if NULL, it is determined using cross-validation.}
+
+\item{model_type}{Specifies the model type, 'gaussian' for regression or 'binomial' for classification.}
 
 \item{add_intercept}{Logical indicating whether to include an intercept in the model.}
 
@@ -40,5 +42,8 @@ bagging can be applied to improve model accuracy and robustness against overfitt
 }
 \examples{
 data(mtcars)
-result_lasso <- fit_lasso_model(mtcars$mpg, mtcars[, c("hp", "wt")], add_intercept = TRUE, bagging = FALSE)
+X <- mtcars[, c("hp", "wt")]
+y <- mtcars$mpg
+result_lasso <- fit_lasso_model(y, X, add_intercept = TRUE, bagging = FALSE)
+print(result_lasso)
 }

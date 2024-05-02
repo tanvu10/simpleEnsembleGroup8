@@ -1,4 +1,4 @@
-#' @title Ridge Regression Fitting
+#' @title Fit Ridge Regression Model with Optional Bagging and Intercept
 #' @description Performs ridge regression using glmnet, optimizing the balance between model complexity
 #' and prediction accuracy through L2 regularization. This method is ideal for handling multicollinearity,
 #' reducing overfitting, and shrinking coefficient values, particularly in situations where the number of
@@ -10,15 +10,19 @@
 #' @param lambda Regularization penalty parameter for ridge regression; if NULL, it is determined via
 #' cross-validation.
 #' @param add_intercept Logical indicating whether to include an intercept in the model.
+#' @param model_type A character string specifying whether to use 'gaussian' for regression or 'binomial' for classification.
 #' @param bagging Logical indicating whether to perform bagging.
 #' @param R Integer specifying the number of bootstrap samples to use if bagging is enabled.
-#' @return A glmnet model object fitted using ridge regression, or if bagging is enabled, an aggregated
-#' result from multiple bootstrap samples.
+#' @return A list containing the ridge regression model details, or if bagging is enabled, an aggregated
+#' result from multiple bootstrap samples including the model, lambda value, coefficients, and fitted values.
 #' @importFrom glmnet glmnet cv.glmnet
 #' @export
 #' @examples
 #' data(mtcars)
-#' result_ridge <- fit_ridge_model(mtcars$mpg, mtcars[, c("hp", "wt")], add_intercept = TRUE, bagging = FALSE)
+#' X <- mtcars[, c("hp", "wt")]
+#' y <- mtcars$mpg
+#' result_ridge <- fit_ridge_model(y, X, add_intercept = TRUE, bagging = FALSE)
+#' print(result_ridge)
 fit_ridge_model <- function(y, X, lambda = NULL, model_type = "gaussian", add_intercept = TRUE, bagging = FALSE, R = 100) {
   validate_inputs(y, X)
 
