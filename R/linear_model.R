@@ -34,6 +34,8 @@ fit_linear_model <- function(y, X, model_type = "gaussian",add_intercept = TRUE,
 
   # Handle categorical variables by creating dummy variables
   factor_cols <- sapply(X, is.factor)
+  print(factor_cols)
+
   if (any(factor_cols)) {
     dummy_matrix <- create_dummy_matrix(X[factor_cols])
     X <- cbind(X[!factor_cols], dummy_matrix)

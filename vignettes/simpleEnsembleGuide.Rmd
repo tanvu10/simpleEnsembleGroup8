@@ -59,6 +59,35 @@ print(results)
 
 
 ```{r}
+# Generating sample data
+set.seed(123) # for reproducibility
+num_samples <- 100
+numeric_data <- rnorm(num_samples, mean = 50, sd = 10)
+factor_levels <- c("A", "B", "C")
+factor_data <- sample(factor_levels, num_samples, replace = TRUE)
+binary_data <- sample(c(0, 1), num_samples, replace = TRUE)
+sample_df <- data.frame(Numeric_Column = numeric_data,
+                        Factor_Column = as.factor(factor_data),
+                        binary_column=binary_data)
+head(sample_df)
+```
+
+#our model
+```{r}
+model3<-fit_linear_model(sample_df$Numeric_Column,sample_df[-1])
+model3
+```
+#built in
+```{r}
+model <- lm(sample_df$Numeric_Column ~ ., data = sample_df[, -1])
+summary(model)
+```
+
+
+```
+
+
+```{r}
 results
 ```
 

@@ -7,22 +7,31 @@
 #' @return Invisible TRUE if inputs are valid, otherwise throws an error.
 #' @export
 validate_inputs <- function(y, X) {
-
-  if (any(is.na(X))) {
-    stop("Predictor variables X should not contain NA values.")
-  }
-  if (is.data.frame(X) && any(is.na(X))) {
+  # Check for NA values in X
+  if (is.data.frame(X) && any(sapply(X, function(col) any(is.na(col))))) {
     stop("Data frame X should not contain NA values.")
   }
+
+  # Ensure y is either numeric or a factor
   if (!is.numeric(y) && !is.factor(y)) {
     stop("Response variable y must be numeric or a factor.")
   }
+
+  # Ensure X is a matrix or data frame
   if (!is.matrix(X) && !is.data.frame(X)) {
     stop("Predictor variables X must be a matrix or data frame.")
   }
+
+  # Check for NA values in matrix X
   if (is.matrix(X) && any(is.na(X))) {
     stop("Matrix X should not contain NA values.")
   }
+
+  # Check for character columns in X and recommend conversion to factor
+  if (is.data.frame(X) && any(sapply(X, is.character))) {
+    stop("Columns in X that are of type character should be converted to factors. Use the as.factor() function to convert these columns.")
+  }
+
   invisible(TRUE)
 }
 
